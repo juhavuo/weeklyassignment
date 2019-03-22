@@ -1,0 +1,27 @@
+{
+  "name": "weeklyassignment1",
+  "version": "1.0.0",
+  "description": "weekly assignment 1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/www.github.com/juhavuo.git"
+  },
+  "keywords": [
+    "node.js",
+    "express",
+    "mongodb"
+  ],
+  "author": "juhavuo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/www.github.com/juhavuo/issues"
+  },
+  "homepage": "https://github.com/www.github.com/juhavuo#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}
