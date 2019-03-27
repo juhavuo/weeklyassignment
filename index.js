@@ -13,6 +13,8 @@ const sharp = require('sharp');
 
 const path = require('path');
 
+const ExifImage = require('exif').ExifImage;
+
 
 //https://stackoverflow.com/questions/32184589/renaming-an-uploaded-file-using-multer-doesnt-work-express-js
 let storage = multer.diskStorage({
@@ -60,6 +62,18 @@ app.post('/upload_photo', upload.single('cat_test_image'), (req, res, next) => {
     }).catch(err => {
       console.log(err);
     });
+
+    try{
+      new ExifImage({image: imagePath}, function (error, exifData) {
+        if(error){
+          console.log('Error'+error.message);
+        }else{
+          console.log(exifData);
+        }
+      })
+    }catch(error){
+      console.log('Error'+error.message);
+    }
 
   res.send(req.file);
 });
