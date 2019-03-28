@@ -46,7 +46,7 @@ app.get('/', (req, res) => {
 
 
 
-app.post('/upload_photo', upload.single('cat_test_image'), (req, res, next) => {
+app.post('/upload_photo', upload.fields([{name:'category'},{name:'title'},{name:'details'},{name:'image'}]), (req, res, next) => {
 
   let latitude = "NAN";
   let longitude = "NAN";
@@ -54,12 +54,13 @@ app.post('/upload_photo', upload.single('cat_test_image'), (req, res, next) => {
 
   let return_json = "";
 
-  console.log(req.file);
-  const small_file_name = 'small' + req.file.filename;
-  const medium_file_name = 'medium' + req.file.filename;
-  const imagePath = path.join(__dirname, '\\uploads\\', req.file.filename);
-  const outputPath = path.join(__dirname, '\\uploads\\', small_file_name);
-  const outputPathMedium = path.join(__dirname, '\\uploads\\', medium_file_name);
+  console.log(req.files.image[0].filename);
+
+  const small_file_name = 'small' + req.files.image[0].filename;
+  const medium_file_name = 'medium' + req.files.image[0].filename;
+  const imagePath = path.join('.\\uploads\\', req.files.image[0].filename);
+  const outputPath = path.join('.\\uploads\\', small_file_name);
+  const outputPathMedium = path.join('.\\uploads\\', medium_file_name);
   console.log(imagePath);
 
   //small image
@@ -96,6 +97,9 @@ app.post('/upload_photo', upload.single('cat_test_image'), (req, res, next) => {
 
         return_json = {
           "time": date_taken,
+          "category": req.body.category,
+          "title": req.body.title,
+          "details": req.body.details,
           "coordinates": {
             "latitude": latitude,
             "longitude": longitude
