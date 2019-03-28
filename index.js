@@ -48,34 +48,71 @@ app.get('/', (req, res) => {
 
 app.post('/upload_photo', upload.single('cat_test_image'), (req, res, next) => {
 
-  console.log(req.file);
-    const small_file_name = 'small'+req.file.filename;
-   const imagePath = path.join(__dirname, '\\uploads\\', req.file.filename);
-   const outputPath = path.join(__dirname, '\\uploads\\', small_file_name);
-   console.log(imagePath);
+  let latitude = "NAN";
+  let longitude = "NAN";
+  let date_taken = "NAN";
 
+  let return_json = "";
+
+  console.log(req.file);
+  const small_file_name = 'small' + req.file.filename;
+  const medium_file_name = 'medium' + req.file.filename;
+  const imagePath = path.join(__dirname, '\\uploads\\', req.file.filename);
+  const outputPath = path.join(__dirname, '\\uploads\\', small_file_name);
+  const outputPathMedium = path.join(__dirname, '\\uploads\\', medium_file_name);
+  console.log(imagePath);
+
+  //small image
   sharp(imagePath)
     .resize(200)
     .toFile(outputPath)
-    .then(data =>{
+    .then(data => {
       console.log(data);
     }).catch(err => {
       console.log(err);
     });
 
-    try{
-      new ExifImage({image: imagePath}, function (error, exifData) {
-        if(error){
-          console.log('Error'+error.message);
-        }else{
-          console.log(exifData);
-        }
-      })
-    }catch(error){
-      console.log('Error'+error.message);
-    }
+  //medium sized image
+  sharp(imagePath)
+    .resize(600)
+    .toFile(outputPathMedium)
+    .then(data => {
+      console.log(data);
+    }).catch(err => {
+      console.log(err);
+    });
 
-  res.send(req.file);
+  try {
+    new ExifImage({
+      image: imagePath
+    }, function(error, exifData) {
+      if (error) {
+        console.log('Error' + error.message);
+      } else {
+        latitude = exifData.gps.GPSLatitudeRef + exifData.gps.GPSLatitude;
+        longitude = exifData.gps.GPSLongitudeRef + exifData.gps.GPSLongitude;
+        date_taken = exifData.exif.DateTimeOriginal;
+        console.log(latitude + ' ' + longitude + ' at ' + date_taken);
+
+        return_json = {
+          "time": date_taken,
+          "coordinates": {
+            "latitude": latitude,
+            "longitude": longitude
+          },
+          "thumbnail": outputPath,
+          "thumbnail-medium": outputPathMedium,
+          "thumbnail-original": imagePath
+        };
+        console.log(return_json);
+        res.send(return_json);
+      }
+    })
+  } catch (error) {
+    console.log('Error' + error.message);
+    res.send('error');
+  }
+
 });
 
 
