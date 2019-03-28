@@ -1,3 +1,5 @@
+'use strict';
+
 const express = require('express');
 const app = express();
 
@@ -57,17 +59,21 @@ app.get('/', (req, res) => {
   res.send("hello world");
 });
 
+app.get('/all', (req,res) =>{
+  Imageinformation.find()
+  .exec()
+  .then(docs => {
+    console.log(docs);
+    res.status(200).json(docs);
+  }).catch(err =>{
+    console.log(err);
+    res.status(500).json({error,err});
+  });
+});
 
 
-app.post('/upload_photo', upload.fields([{
-  name: 'category'
-}, {
-  name: 'title'
-}, {
-  name: 'details'
-}, {
-  name: 'image'
-}]), (req, res, next) => {
+
+app.post('/upload_photo', upload.fields([{name: 'category'}, {name: 'title'}, {name: 'details'}, {name: 'image'}]), (req, res, next) => {
 
   let latitude = "NAN";
   let longitude = "NAN";
