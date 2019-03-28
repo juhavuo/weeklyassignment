@@ -15,6 +15,9 @@ const path = require('path');
 
 const ExifImage = require('exif').ExifImage;
 
+const mongoose = require('mongoose');
+
+const Imageinformation = require('./models/imageinformation');
 
 //https://stackoverflow.com/questions/32184589/renaming-an-uploaded-file-using-multer-doesnt-work-express-js
 let storage = multer.diskStorage({
@@ -31,6 +34,16 @@ let storage = multer.diskStorage({
 const upload = multer({
   storage: storage
 });
+
+mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/cats`, {
+  useNewUrlParser: true
+}).then(() => {
+  console.log('Connected successfully.');
+}, err => {
+  console.log('Connection to db failed: ' + err);
+});
+
+
 /*
 const test_middleware = function(req, res, next){
   console.log('ai ai ai');
@@ -46,7 +59,15 @@ app.get('/', (req, res) => {
 
 
 
-app.post('/upload_photo', upload.fields([{name:'category'},{name:'title'},{name:'details'},{name:'image'}]), (req, res, next) => {
+app.post('/upload_photo', upload.fields([{
+  name: 'category'
+}, {
+  name: 'title'
+}, {
+  name: 'details'
+}, {
+  name: 'image'
+}]), (req, res, next) => {
 
   let latitude = "NAN";
   let longitude = "NAN";
@@ -94,6 +115,27 @@ app.post('/upload_photo', upload.fields([{name:'category'},{name:'title'},{name:
         longitude = exifData.gps.GPSLongitudeRef + exifData.gps.GPSLongitude;
         date_taken = exifData.exif.DateTimeOriginal;
         console.log(latitude + ' ' + longitude + ' at ' + date_taken);
+
+        const imageinformation = new Imageinformation({
+          _id: new mongoose.Types.ObjectId(),
+          time: date_taken,
+          category: req.body.category,
+          title: req.body.title,
+          details: req.body.details,
+          coordinates: {
+            lat: latitude,
+            lng: longitude
+          },
+          thumbnail: outputPath,
+          image: outputPathMedium,
+          original: imagePath
+        });
+
+        imageinformation.save().then(result => {
+          console.log(result);
+        }).catch(err =>{
+          console.log(err);
+        });
 
         return_json = {
           "time": date_taken,
