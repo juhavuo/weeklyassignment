@@ -26,7 +26,11 @@ const upload = multer({
 
 router.get('/all', ImagesController.images_get_all);
 
+router.get('/:imageId',ImagesController.images_get_by_id);
+
 router.delete('/:imageId', ImagesController.images_delete);
+
+/*router.patch('/:imageId', ImagesController.images_update);*/
 
 router.post('/', upload.fields([{name: 'category'}, {name: 'title'}, {name: 'details'}, {name: 'image'}]), ImagesController.images_post);
 module.exports = router;

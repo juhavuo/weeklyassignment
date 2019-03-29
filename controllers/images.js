@@ -20,6 +20,16 @@ exports.images_get_all = (req,res) =>{
   });
 }
 
+exports.images_get_by_id = (req,res) =>{
+  const id = req.params.imageId;
+  Imageinformation.findById(id)
+  .exec()
+  .then(doc=>{
+    res.status(200).json(doc);
+  })
+  .catch(err=>{error:err});
+}
+
 exports.images_delete = (req, res) => {
   const id = req.params.imageId;
   Imageinformation.remove({_id: id})
@@ -31,6 +41,22 @@ exports.images_delete = (req, res) => {
     res.status(500).json({error: err});
   });
 }
+
+/*
+exports.images_update = (req, res) => {
+  const id = req.params.imageId;
+  const updateObject = req.body;
+  Imageinformation.update({_id: id},{$set: updateObject})
+  .exec()
+  .then(result => {
+    res.status(200).json({result});
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({error: err});
+  });
+
+}*/
 
 exports.images_post = (req, res, next) => {
 
