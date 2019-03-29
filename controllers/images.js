@@ -101,7 +101,7 @@ exports.images_post = (req, res, next) => {
         }).catch(err =>{
           console.log(err);
         });
-
+        /*
         return_json = {
           "time": date_taken,
           "category": req.body.category,
@@ -114,9 +114,9 @@ exports.images_post = (req, res, next) => {
           "thumbnail": outputPath,
           "thumbnail-medium": outputPathMedium,
           "thumbnail-original": imagePath
-        };
-        console.log(return_json);
-        res.send(return_json);
+        };*/
+
+        res.send(imageinformation);
       }
     })
   } catch (error) {
