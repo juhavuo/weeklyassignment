@@ -18,7 +18,19 @@ exports.images_get_all = (req,res) =>{
     console.log(err);
     res.status(500).json({error,err});
   });
-};
+}
+
+exports.images_delete = (req, res) => {
+  const id = req.params.imageId;
+  Imageinformation.remove({_id: id})
+  .exec()
+  .then(result => {
+    res.status(200).json(result);
+  })
+  .catch(err => {
+    res.status(500).json({error: err});
+  });
+}
 
 exports.images_post = (req, res, next) => {
 
@@ -112,4 +124,4 @@ exports.images_post = (req, res, next) => {
     res.send('error');
   }
 
-};
+}
